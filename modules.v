@@ -871,7 +871,7 @@ module CompleteSystem(clock);
                 endcase
             end
             0100, 0101: begin
-                Mem_CS <= 1'b0;
+                Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
                 case(aluSystem.IROut[7:4]) // SRC1
                 0000, 0001: begin
