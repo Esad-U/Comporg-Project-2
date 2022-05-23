@@ -355,3 +355,17 @@ module memory_tb();
         $display("");  
     end
 endmodule
+
+module CompleteSystemTestbench();
+
+    reg clock;
+
+    // Clock Signal Generation
+    always 
+    begin
+        Clock = 1; #5; Clock = 0; #5; // 10ns period
+    end 
+
+    CompleteSystem(clock);
+
+endmodule
