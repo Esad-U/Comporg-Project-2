@@ -1333,7 +1333,7 @@ module CompleteSystem(clock);
                 endcase
                 T <= T + 1;
             end
-            1001:begin
+            1010:begin
                 Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
                 case(aluSystem.IROut[7:4])
@@ -1619,7 +1619,7 @@ module CompleteSystem(clock);
                     end                                    
                 endcase
             end
-            1010:begin
+            1001:begin
                 Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
                 case(aluSystem.IROut[7:4])
@@ -2148,7 +2148,7 @@ module CompleteSystem(clock);
                 Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
                 case(ALUSystem.IROut[3:0])
-                    0000, 0001: begin
+                    /*0000, 0001: begin
                         ARF_OutCSel <= 2'b00;
                         RF_RegSel <= 4'b1111;
                         MuxCSel <= 1'b0;
@@ -2162,7 +2162,7 @@ module CompleteSystem(clock);
                         ARF_OutCSel <= 2'b11;
                         RF_RegSel <= 4'b1111;
                         MuxCSel <= 1'b0;
-                    end
+                    end*/
                     0100: begin
                         MuxCSel <= 1'b1;
                         RF_OutASel <= 2'b00;
@@ -2235,7 +2235,7 @@ module CompleteSystem(clock);
                 Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
                 case(aluSystem.IROut[3:0])
-                    0000, 0001: begin
+                    /*0000, 0001: begin
                         ARF_OutCSel <= 2'b00;
                         RF_RegSel <= 4'b1111;
                         MuxCSel <= 1'b0;
@@ -2249,7 +2249,7 @@ module CompleteSystem(clock);
                         ARF_OutCSel <= 2'b11;
                         RF_RegSel <= 4'b1111;
                         MuxCSel <= 1'b0;
-                    end
+                    end*/
                     0100: begin
                         MuxCSel <= 1'b1;
                         RF_OutASel <= 2'b00;
