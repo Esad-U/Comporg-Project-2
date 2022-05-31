@@ -1115,7 +1115,7 @@ module CompleteSystem(clock);
                         RF_RegSel <= 4'b1110;
                     end
                     RF_FunSel <= 2'b10;
-                    Mem_WR <= 1'b0
+                    Mem_WR <= 1'b0;
                     Mem_CS <= 1'b0;
                     IR_Enable <= 1'b0;
                     T <= 3'b000;  
