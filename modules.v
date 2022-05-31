@@ -518,16 +518,28 @@ module CompleteSystem(clock);
     always @(posedge clock) begin
         // fetching LSB
         if(T == 3'b000) begin
-            RF_RegSel <= 4'b1111;
-            ARF_OutDSel <= 2'b00;
-            ARF_FunSel <= 2'b01;
-            ARF_RegSel <= 3'b011;
-            IR_LH <= 1'b1;
-            IR_Enable <= 1'b1;
-            IR_Funsel <= 2'b10;
-            Mem_WR <= 1'b0;
-            Mem_CS <= 1'b0;
-            T <= T + 1;
+            if (initial_fetch_flag) begin
+                RF_RegSel <= 4'b1111;
+                ARF_FunSel <= 2'b11;
+                ARF_RegSel <= 3'b011;
+                IR_Enable <= 1'b0;
+                Mem_CS <= 1'b1;
+                
+                initial_fetch_flag <= 1'b0;
+                T <= 3'b000;
+            end
+            else begin
+                RF_RegSel <= 4'b1111;
+                ARF_OutDSel <= 2'b00;
+                ARF_FunSel <= 2'b01;
+                ARF_RegSel <= 3'b011;
+                IR_LH <= 1'b1;
+                IR_Enable <= 1'b1;
+                IR_Funsel <= 2'b10;
+                Mem_WR <= 1'b0;
+                Mem_CS <= 1'b0;
+                T <= T + 1;
+            end
         end
         // fetching MSB
         else if(T == 3'b001) begin
