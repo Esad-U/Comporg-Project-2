@@ -355,3 +355,16 @@ module memory_tb();
         $display("");  
     end
 endmodule
+
+module Project2Test();
+    reg clock;
+    // Clock Signal Generation
+    always 
+    begin
+        clock = 1; #10; 
+        $display("Memory Out: %b", CS.aluSystem.MemoryOut); clock = 0; #10; // 10ns period
+    end
+
+    CompleteSystem CS(clock);
+
+endmodule
