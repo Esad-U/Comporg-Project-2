@@ -555,7 +555,7 @@ module CompleteSystem(clock);
             case(aluSystem.IROut[15:12])
             0000: begin
                 if (aluSystem.IROut[10] == 1) begin
-                    MuxBSel <= 2'b10;
+                    MuxBSel <= 2'b01;
                     ARF_RegSel <= 3'b011; 
                     ARF_FunSel <= 2'b10;
                     Mem_CS <= 1'b1;
@@ -582,9 +582,7 @@ module CompleteSystem(clock);
                     IR_Enable <= 1'b0;
                     T <= 3'b000;  
                 end else if (aluSystem.IROut[10] == 0) begin
-                    MuxBSel <= 2'b01;
-                    ARF_RegSel <= 3'b101;
-                    ARF_FunSel <= 2'b10;
+                    ARF_RegSel <= 3'b111;
                     ARF_OutDSel <= 2'b10;
                     Mem_CS <= 1'b1;
                     IR_Enable <= 1'b0;
@@ -2027,7 +2025,7 @@ module CompleteSystem(clock);
         
         end
        
-        else if(T == 3) begin
+        else if(T == 3'd3) begin
             case(aluSystem.IROut[15:12])
             0001: begin
                 MuxASel <= 2'b01;
