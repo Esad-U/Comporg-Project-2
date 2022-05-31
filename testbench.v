@@ -358,13 +358,17 @@ endmodule
 
 module Project2Test();
     reg clock;
+    reg reset;
     // Clock Signal Generation
+    initial begin
+        reset = 0;
+    end
     always 
     begin
-        clock = 1; #10; 
-        $display("Memory Out: %b", CS.aluSystem.MemoryOut); clock = 0; #10; // 10ns period
+        clock = 0; #10; clock = 1; #10; 
+        //$display("Memory Out: %b", CS.aluSystem.MemoryOut); clock = 0; #10; // 10ns period
     end
 
-    CompleteSystem CS(clock);
+    CompleteSystem CS(clock, reset);
 
 endmodule

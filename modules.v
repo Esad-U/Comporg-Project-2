@@ -468,8 +468,9 @@ module ALUSystem(RF_OutASel, RF_OutBSel, RF_FunSel, RF_RegSel, ALU_FunSel,
 endmodule
 
 
-module CompleteSystem(clock);
+module CompleteSystem(clock, reset);
     input       clock;
+    input       reset;
     reg [1:0]   RF_OutASel; 
     reg [1:0]   RF_OutBSel; 
     reg [1:0]   RF_FunSel;
@@ -512,6 +513,17 @@ module CompleteSystem(clock);
     
         
     always @(posedge clock) begin
+        if (reset == 1'b1) begin
+            RF_RegSel <= 4'b0000;
+            RF_FunSel <= 2'b11;
+            ARF_RegSel <= 3'b000;            
+            ARF_FunSel <= 2'b11;
+            IR_Enable <= 1'b0;
+            Mem_CS <= 1'b1;
+            
+            initial_fetch_flag <= 1'b1;
+            T <= 3'b000;            
+        end
         // fetching LSB
         if(T == 3'b000) begin
             if (initial_fetch_flag) begin
@@ -551,7 +563,7 @@ module CompleteSystem(clock);
             T <= T + 1;
         end
         // decoding
-        else if(T == 2) begin
+        else if(T == 3'd2) begin
             case(aluSystem.IROut[15:12])
             0000: begin
                 if (aluSystem.IROut[10] == 1) begin
@@ -592,9 +604,7 @@ module CompleteSystem(clock);
             end
             0010: begin
                 if (aluSystem.IROut[10] == 0) begin
-                    MuxBSel <= 2'b01;
-                    ARF_RegSel <= 3'b101;
-                    ARF_FunSel <= 2'b10;
+                    ARF_RegSel <= 3'b111;
                     ARF_OutDSel <= 2'b10;
                     Mem_CS <= 1'b1;
                     IR_Enable <= 1'b0;
