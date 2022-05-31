@@ -945,7 +945,7 @@ module CompleteSystem(clock);
                             end
                             0100:begin
                                 MuxCSel <= 1'b0;
-                                ALU_FunSel <= 4'0010;
+                                ALU_FunSel <= 4'b0010;
                                 MuxASel <= 2'b11;                                
                                 RF_FunSel <= 2'b10;
                                 RF_RegSel <= 4'b0111;
@@ -1001,7 +1001,7 @@ module CompleteSystem(clock);
                             end
                             0100:begin
                                 MuxCSel <= 1'b0;
-                                ALU_FunSel <= 4'0010;
+                                ALU_FunSel <= 4'b0010;
                                 MuxASel <= 2'b11;                                
                                 RF_FunSel <= 2'b10;
                                 RF_RegSel <= 4'b0111;
@@ -1057,7 +1057,7 @@ module CompleteSystem(clock);
                             end
                             0100:begin
                                 MuxCSel <= 1'b0;
-                                ALU_FunSel <= 4'0010;
+                                ALU_FunSel <= 4'b0010;
                                 MuxASel <= 2'b11;                                
                                 RF_FunSel <= 2'b10;
                                 RF_RegSel <= 4'b0111;
@@ -2042,13 +2042,13 @@ module CompleteSystem(clock);
                     RF_RegSel <= 4'b1110;
                 end
                 RF_FunSel <= 2'b10;
-                Mem_WR <= 1'b0
+                Mem_WR <= 1'b0;
                 Mem_CS <= 1'b0;
                 IR_Enable <= 1'b0;
                 T <= 3'b000;  
             end
             0010: begin
-                RF_OutBSel <= aluSystem.IRout[9:8];
+                RF_OutBSel <= aluSystem.IROut[9:8];
                 ALU_FunSel <= 4'b0001;
                 Mem_WR <= 1'b1;
                 Mem_CS <= 1'b0;
