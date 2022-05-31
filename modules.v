@@ -488,12 +488,8 @@ module CompleteSystem(clock);
     reg [1:0]   MuxBSel;
     reg         MuxCSel;
     reg [2:0]   T = 3'b000;
+    reg initial_fetch_flag = 1'b1;
     
-    reg REGSEL;
-
-    reg [3:0] DEST_REG;
-    reg [3:0] SRCREG1;
-    reg [3:0] SRCREG2;
 
     ALUSystem aluSystem(.RF_OutASel(RF_OutASel), 
     .RF_OutBSel(RF_OutBSel), 
@@ -568,30 +564,320 @@ module CompleteSystem(clock);
                 end
                 T <= 3'b000;        
             end
-            0001: ;
-            0010: ;
-            0011: ;
-            0100: ;
-            0101: ;
-            0110: ;
-            0111: ;
-            1000: ;
-            1001: ;
-            1010: ;
-            1011: ; //pul
-            1100: ; //psh
-            1101: ;
-            1110: ;
-            1111: begin
-               if (aluSystem.ALUOutFlag[3] == 0 && aluSystem.IROut[10] == 1) begin
-                   MuxBSel <= 2'b10;
-                   ARF_RegSel <= 3'b011; 
-                   ARF_FunSel <= 2'b10;
-                   Mem_CS <= 1'b1;
-                   IR_Enable <= 1'b0;
-                   RF_RegSel <= 4'b1111;
-               end
-               T <= 3'b000;
+            0001: begin
+                if (aluSystem.IROut[10] == 1) begin
+                    MuxASel <= 2'b00;
+                    ARF_RegSel <= 3'b111;
+                    if (aluSystem.IROut[9:8] == 2'b00) begin
+                        RF_RegSel <= 4'b0111;
+                    end else if (aluSystem.IROut[9:8] == 2'b01) begin
+                        RF_RegSel <= 4'b1011;
+                    end else if (aluSystem.IROut[9:8] == 2'b10) begin
+                        RF_RegSel <= 4'b1101;
+                    end else if (aluSystem.IROut[9:8] == 2'b11) begin
+                        RF_RegSel <= 4'b1110;
+                    end
+                    RF_FunSel <= 2'b10;
+                    Mem_CS <= 1'b1;
+                    IR_Enable <= 1'b0;
+                    T <= 3'b000;  
+                end else if (aluSystem.IROut[10] == 0) begin
+                    MuxBSel <= 2'b01;
+                    ARF_RegSel <= 3'b101;
+                    ARF_FunSel <= 2'b10;
+                    ARF_OutDSel <= 2'b10;
+                    Mem_CS <= 1'b1;
+                    IR_Enable <= 1'b0;
+                    RF_RegSel <= 4'b1111;
+                    T <= T + 1;
+                end
+            end
+            0010: begin
+                if (aluSystem.IROut[10] == 0) begin
+                    MuxBSel <= 2'b01;
+                    ARF_RegSel <= 3'b101;
+                    ARF_FunSel <= 2'b10;
+                    ARF_OutDSel <= 2'b10;
+                    Mem_CS <= 1'b1;
+                    IR_Enable <= 1'b0;
+                    RF_RegSel <= 4'b1111;
+                    T <= T + 1;
+                end
+            end
+            0011: begin
+                Mem_CS <= 1'b1;
+                IR_Enable <= 1'b0;
+                case(aluSystem.IROut[7:4])
+                0000, 0001: begin
+                    ARF_OutCSel <= 2'b00;
+                    case(aluSystem.IROut[11:8])
+                    0010: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b101;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0011: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b110;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0010: begin
+                    ARF_OutCSel <= 2'b10;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b011;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0011: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b110;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0011: begin
+                    ARF_OutCSel <= 2'b11;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b011;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0010: begin
+                        MuxCSel <= 1'b0;
+                        ALU_FunSel <= 4'b0000;
+                        MuxBSel <= 2'b11;
+                        ARF_RegSel <= 3'b101;
+                        ARF_FunSel <= 2'b10;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b10;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0100: begin
+                    RF_OutBSel <= 2'b00;
+                    ALU_FunSel <= 4'b0001;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b011;
+                    end
+                    0010: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b101;
+                    end
+                    0011: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b110;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0101: begin
+                    RF_OutBSel <= 2'b01;
+                    ALU_FunSel <= 4'b0001;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b011;
+                    end
+                    0010: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b101;
+                    end
+                    0011: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b110;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0110: begin
+                    RF_OutBSel <= 2'b10;
+                    ALU_FunSel <= 4'b0001;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b011;
+                    end
+                    0010: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b101;
+                    end
+                    0011: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b110;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0111: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1110;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                0111: begin
+                    RF_OutBSel <= 2'b11;
+                    ALU_FunSel <= 4'b0001;
+                    case(aluSystem.IROut[11:8])
+                    0000, 0001: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b011;
+                    end
+                    0010: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b101;
+                    end
+                    0011: begin
+                        MuxBSel <= 2'b11;
+                        ARF_FunSel <= 2'b10;
+                        ARF_RegSel <= 3'b110;
+                    end
+                    0100: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b0111;
+                    end
+                    0101: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1011;
+                    end
+                    0110: begin
+                        MuxASel <= 2'b11;
+                        RF_FunSel <= 2'b10;
+                        RF_RegSel <= 4'b1101;
+                    end
+                    endcase
+                    T <= 3'b000;
+                end
+                endcase
+            end
             0100, 0101: begin
                 Mem_CS <= 1'b1;
                 IR_Enable <= 1'b0;
