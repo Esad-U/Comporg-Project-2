@@ -552,9 +552,9 @@ module CompleteSystem(clock);
                     ARF_FunSel <= 2'b10;
                     Mem_CS <= 1'b1;
                     IR_Enable <= 1'b0;
-                    RF_RegSel <= 4'b1111;
-                    T <= 3'b000;  
+                    RF_RegSel <= 4'b1111;  
                 end
+                T <= 3'b000;
             end
             0001: begin
                 if (aluSystem.IROut[10] == 1) begin
