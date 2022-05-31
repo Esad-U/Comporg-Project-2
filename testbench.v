@@ -356,16 +356,15 @@ module memory_tb();
     end
 endmodule
 
-module CompleteSystemTestbench();
-
+module Project2Test();
     reg clock;
-
     // Clock Signal Generation
     always 
     begin
-        Clock = 1; #5; Clock = 0; #5; // 10ns period
-    end 
+        clock = 1; #10; 
+        $display("Memory Out: %b", CS.aluSystem.MemoryOut); clock = 0; #10; // 10ns period
+    end
 
-    CompleteSystem(clock);
+    CompleteSystem CS(clock);
 
 endmodule
